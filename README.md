@@ -43,6 +43,8 @@ webhooks, some shell scripting knowledge(linux commands) , docker knowledge ,git
  
 ### 6. Jenkins Jobs 5:
 
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/JOB%205
+ 
 ## Future Possibilities :
 
 ##### We can create same setup in Cloud Services.
