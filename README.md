@@ -21,6 +21,29 @@ webhooks, some shell scripting knowledge(linux commands) , docker knowledge ,git
  
  ## steps to achieve this task :
  
- ### 1. Creating Dockerfile and Building Personal Image using it 
+ ### 1. Creating Dockerfile and Building Image using it 
  
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/Dockerfile
  
+ ### 2. Jenkins Job1 :
+ 
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/JOB1
+ 
+ ### 3. Jenkins Job2 :
+ 
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/JOB%202
+ 
+ ### 4. Jenkins Email Configuration :
+ 
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/mail.rc
+ 
+### 5. Jenkins Job3 and 4 :
+ 
+ https://github.com/sahanabalappa/DEVOPS_TASK2/blob/master/JOB%203%20and%204
+ 
+### 6. Jenkins Jobs 5:
+
+## Future Possibilities :
+
+##### We can create same setup in Cloud Services.
+
