@@ -1,0 +1,6 @@
+set smtp=smtps://smtp.gmail.com:465
+set smtp-auth=login
+set smtp-auth-user=YOUR@EMAIL
+set smtp-auth-password=YOURPASSWORD
+set ssl-verify=ignore
+set nss-config-dir=/etc/pki/nssdb/

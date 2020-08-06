@@ -1,0 +1,32 @@
+#Job5 for monitor :
+#If container where app is running. fails due to any reson then this job should automatically start the container again.
+
+
+if ssh root@IP docker ps | grep test_php 
+then
+if ssh root@IP docker ps | grep prod_php
+then
+echo "PHP SERVER UP AND RUNNING"
+else
+echo PHP Production Server Down  | mail -v -s "RELAUNCHING PHP SERVER"  RECEIVER-EMAILID
+ssh root@IP docker run -dit -v /phptest_storage:/var/www/html/ -p 8082:80 --name prod_php httpd
+fi
+else
+
+echo PHP Test Server Down  | mail -v -s " PHP SERVER DOWN"  RECEIVER-EMAILID
+fi
+
+if ssh root@IP docker ps | grep test_html 
+then
+if ssh root@IP docker ps | grep prod_html
+then
+echo "HTML/STATIC Production Server UP AND RUNNING"
+else
+echo HTML/STATIC Pages Production Server Down  | mail -v -s "RELAUNCHING SERVER"  RECEIVER-EMAILID
+ssh root@IP docker run -dit -v /htmltest_storage:/usr/local/apache2/htdocs/ -p 8081:80 --name prod_html httpd
+fi
+else
+
+echo HTML Test Server Down  | mail -v -s " HTML SERVER DOWN " RECEIVER-EMAILID
+fi
+

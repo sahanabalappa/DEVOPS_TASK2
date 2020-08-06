@@ -1,0 +1,32 @@
+# Job1 : Pull  the Github repo automatically when some developers push repo to Github.
+
+
+
+#POST-COMMIT HOOK 
+
+#!/bin/bash
+
+git push
+
+
+
+
+#FIRST OF ALL NEED TO CONFIGURE JENKINS ie Putting the initial password , and 
+#enbale KEY-BASED AUTHENTICATION with Remote host
+#ssh-keygen  (on ssh client side ie  our jenkin container)
+#and copy this key to remote host ie in case our base os where docker is installed
+#ssh-copy-id root@IP   (IP of ur baseos)  
+#INORDER  TO PREVENT FROM ENTERING  THE PASSWORD AGAIN AND AGAIN FOR REMOTE LOGIN.
+
+#install Github , BUILD PIPELINE, DELIVERY PIPELINE And GIT PULL REQUEST BUILDER plugins in JENKIN.
+#One should have some knowledge of JENKINS , GITHUB AND GIT AND DOCKER.
+
+#JENKINS  JOB 1 SCRIPT:
+
+rm -rvf /storage/
+mkdir /storage/
+cp -rvf * /storage/
+
+python3 /workdir/check_forext.py
+
+

@@ -1,0 +1,82 @@
+#I HAD COMBINED BOTH THE JOBS and Also AFTER testing the Deployment is done if no issues.
+
+#Job3 : Test your app if it  is working or not.
+#Job4 : if app is not working , then send email to developer with error messages.
+
+
+#test_php and test_html are testing env.
+#prod_php and prod_html are production env.
+
+
+#I used mailx to send the mail i have done all the configurations in jenkins server regarding the mailx.
+
+
+no_html=0
+no_php=0
+
+if ssh root@IP docker ps | grep test_html
+then
+for files in $(ssh root@IP ls -A /htmltest_storage); 
+do status=$(curl -o /dev/null -w "%{http_code}" -s IP:8086/${files}) ; 
+if [[ $status == 200 ]]; 
+then echo -e SUCCESS CODE:  $status  "  "   FILENAME: $files  | mail -v -s "TESTING SUCCESS" RECEIVER-EMAILID  ;
+else echo ERROR CODE: $status FILENAME: $files  | mail -v -s "TESTING FAILED" RECEIVER-EMAILID;no_html=1  
+ssh root@IP docker rm -f test_html
+fi
+done
+else
+no_html=1
+fi
+
+
+if ssh root@IP docker ps | grep test_php
+then
+for file in $(ssh root@IP ls -A /phptest_storage);
+do status=$(curl -o /dev/null -w "%{http_code}" -s IP:8085/${file}) ;
+if [[ $status == 200 ]];
+then echo -e SUCCESS CODE: $status "   " FILENAME: $file  | mail -v -s "TESTING SUCCESS" RECEIVER-EMAILID  ;
+else
+echo ERROR CODE: $status FILENAME: $file  | mail -v -s "TESTING FAILED" RECEIVER-EMAILID; no_php=1  ; 
+ssh root@IP docker rm -f test_php
+fi
+done
+else
+no_php=1
+fi
+
+
+if (( $no_php == 1 && $no_html == 1 ))
+then
+echo "All codes failed testing"  | mail -v -s "TESTING FAILED" RECEIVER-EMAILID
+exit 1
+else
+if (( ( $no_php == 0 && $no_html == 0 )  || ( $no_php == 1 && $no_html == 0 ) || ( $no_php == 0 && $no_html == 1) ))
+then
+if (( $no_php == 0 ))
+then
+if ssh root@IP docker ps | grep test_php
+then
+if ssh root@IP docker ps | grep prod_php
+then
+ssh root@IP docker rm -f prod_php
+ssh root@IP docker run -dit -v /phptest_storage:/var/www/html/ -p 8082:80 --name prod_php vimal13/apache-webserver-php
+else
+ssh root@IP docker run -dit -v /phptest_storage:/var/www/html/ -p 8082:80 --name prod_php vimal13/apache-webserver-php
+fi
+fi
+fi
+if (( $no_html == 0 ))
+then
+if ssh root@IP docker ps | grep test_html
+then
+if ssh root@IP docker ps | grep prod_html
+then
+ssh root@IP docker rm -f prod_html
+ssh root@IP docker run -dit -v /htmltest_storage:/usr/local/apache2/htdocs/ -p 8081:80 --name prod_html httpd
+else
+ssh root@IP docker run -dit -v /htmltest_storage:/usr/local/apache2/htdocs/ -p 8081:80 --name prod_html httpd
+fi
+fi
+fi
+fi
+fi

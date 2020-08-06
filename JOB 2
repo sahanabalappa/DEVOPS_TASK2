@@ -1,0 +1,53 @@
+ #Job2 :
+ #By looking at the code or program file, 
+ #Jenkins should automatically start the respective language interpreter install image container to deploy code 
+ #( eg. If code is of  PHP, then Jenkins should start the container that has PHP already installed ).
+ 
+ #we can also use "file -s filename" to check for the content of the file also but i have created it for html js and php pages using different approach.
+
+
+isempty_html=0
+isempty_php=0                                                               #FIRST OF ALL NEED TO CREATE TWO DIRECTORIES  /htmltest_storage 
+if [[ $(ssh root@1IP  ls -A /htmltest_storage) ]]                            # and /phptest_storage
+                                                                                #IP ==> BASE OS WHERE DOCKER IS INSTALLED
+then
+if ssh root@IP docker ps | grep test_html
+then
+ssh root@IP docker rm -f test_html
+ssh root@IP docker run -dit -v /htmltest_storage:/usr/local/apache2/htdocs/ -p 8086:80 --name test_html httpd    #I HAVE USED httpd official image for html and js page deployment
+else
+ssh root@IP docker run -dit -v /htmltest_storage:/usr/local/apache2/htdocs/ -p 8086:80 --name test_html httpd
+fi
+else
+if ssh root@IP docker ps | grep test_html
+then
+ssh root@IP docker rm -f test_html
+echo EMPTY HTML FOLDER
+fi
+isempty_html=1
+fi
+
+if [[ $(ssh root@IP ls -A /phptest_storage) ]]  
+then
+if ssh root@IP docker ps | grep test_php
+then
+ssh root@IP docker rm -f test_php
+ssh root@IP docker run -dit -v /phptest_storage:/var/www/html/ -p 8085:80 --name test_php vimal13/apache-webserver-php   #I HAVE USED docker image created by Vimal sir for php pages deployment
+else
+ssh root@IP docker run -dit -v /phptest_storage:/var/www/html/ -p 8085:80 --name test_php vimal13/apache-webserver-php
+fi
+else
+if ssh root@IP docker ps | grep test_php
+then
+ssh root@IP docker rm -f test_php
+echo EMPTY PHP FOLDER
+fi
+isempty_php=1
+fi
+
+if (( $isempty_html == 1 && $isempty_php == 1 ))
+then
+
+echo BOTH FOLDERS EMPTY
+exit 1
+fi
